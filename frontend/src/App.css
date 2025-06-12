@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Adidas brand colors */
+:root {
+  --adidas-black: #000000;
+  --adidas-white: #FFFFFF;
+  --adidas-red: #FF0000;
+  --adidas-gray: #767677;
+  --adidas-light-gray: #F5F5F5;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Product card hover effects */
+.product-card {
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Hero gradient */
+.hero-gradient {
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
+}
+
+/* Adidas stripes pattern */
+.adidas-stripes {
+  position: relative;
+}
+
+.adidas-stripes::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  pointer-events: none;
+}
+
+/* Button styles */
+.btn-primary {
+  background-color: var(--adidas-black);
+  color: var(--adidas-white);
+  border: 2px solid var(--adidas-black);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--adidas-white);
+  color: var(--adidas-black);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--adidas-black);
+  border: 2px solid var(--adidas-black);
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--adidas-black);
+  color: var(--adidas-white);
+}
+
+/* Loading spinner */
+.spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid var(--adidas-black);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--adidas-gray);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--adidas-black);
+}
