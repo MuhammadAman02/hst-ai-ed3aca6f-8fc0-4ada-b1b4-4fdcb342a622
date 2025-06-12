@@ -1,136 +1,162 @@
-# Minimal FastAPI Project Base
+# Adidas Shoes Store - Backend API
 
-A streamlined foundation for building Python web applications using FastAPI.
+A professional ecommerce backend API for Adidas shoes built with FastAPI, SQLAlchemy, and modern Python practices.
 
 ## Features
 
-- **FastAPI Core**: Leverages the high-performance FastAPI framework.
-- **Docker Support**: Production-ready containerization with a multi-stage Dockerfile.
-- **Fly.io Optimized**: Includes a `fly.toml` for easy deployment with auto-scaling and cost-saving measures.
-- **Health Monitoring**: Basic health check endpoint (`/health`) included.
-- **Environment Configuration**: Uses `.env` files for managing settings.
+- **Authentication & Authorization**: JWT-based auth with user registration/login
+- **Product Management**: Full CRUD operations for products with categories
+- **Order Management**: Complete order processing with cart functionality
+- **User Management**: User profiles and account management
+- **Database**: SQLAlchemy ORM with SQLite (easily configurable for PostgreSQL)
+- **Security**: Password hashing, JWT tokens, CORS support
+- **API Documentation**: Auto-generated OpenAPI/Swagger docs
+- **Production Ready**: Docker support, health checks, proper error handling
 
-## Project Structure
+## Quick Start
 
-```
-project_base/
-├── app/
-│   ├── __init__.py
-│   ├── api/            # API endpoints (e.g., FastAPI routers)
-│   │   └── __init__.py
-│   ├── core/           # Core configuration, settings, error handling, logging
-│   │   └── __init__.py
-│   ├── frontend/       # UI implementations (e.g., NiceGUI pages, ReactPy components, FastAPI routes)
-│   │   ├── __init__.py
-│   │   # ├── nicegui_app.py  # Example: NiceGUI implementation
-│   │   # ├── reactpy_app.py  # Example: ReactPy implementation
-│   │   # └── routes.py       # Example: FastAPI frontend routes
-│   ├── generated/      # AI-generated application code
-│   │   └── __init__.py
-│   ├── models/         # Data models & schemas (e.g., Pydantic, SQLAlchemy)
-│   │   └── __init__.py
-│   ├── services/       # Business logic & external API integrations
-│   │   └── __init__.py
-│   ├── static/         # Static assets (CSS, JS, images). ALL image files MUST be placed here or in subdirectories within static/. Do NOT create separate top-level image directories like 'pictures/'.
-│   ├── templates/      # HTML templates (Jinja2)
-│   └── main.py         # Defines FastAPI routes and application logic for the 'app' module
-├── .dockerignore         # Specifies intentionally untracked files for Docker
-├── .env                  # Environment variables (create this file based on .env.example if provided)
-├── Dockerfile            # Container configuration
-├── fly.toml              # fly.io deployment configuration
-├── main.py               # Application entry point (runs the Uvicorn server)
-├── README.md             # This file
-└── requirements.txt      # Python dependencies
+### Local Development
+
+1. **Install Dependencies**
+```bash
+pip install -r requirements.txt
 ```
 
-## Getting Started
+2. **Set Environment Variables**
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
 
-### Prerequisites
-
-- Python 3.8+
-- Docker (optional, for containerized deployment)
-- Fly.io account and `flyctl` CLI (optional, for Fly.io deployment)
-
-### Installation
-
-1.  **Clone the repository (if applicable)**
-2.  **Create and activate a virtual environment:**
-    ```bash
-    python -m venv venv
-    # On Windows
-    # venv\Scripts\activate
-    # On macOS/Linux
-    # source venv/bin/activate
-    ```
-3.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-4.  **Create a `.env` file** in the `project_base` directory (you can copy `.env.example` if one exists and modify it). At a minimum, it might look like this if you want to change the default port:
-    ```env
-    PORT=8000
-    HOST=0.0.0.0
-    ```
-    If no `.env` file is present, the application will use default values (e.g., port 8000).
-
-### Running the Application Locally
-
-Execute the main application script:
-
+3. **Run the Application**
 ```bash
 python main.py
 ```
 
-The application will typically be available at `http://0.0.0.0:8000` (or the port specified in your `.env` file).
-
-## API Endpoints
-
--   `GET /`: Returns a welcome message.
--   `GET /health`: Returns a health status, useful for monitoring.
-
-## Deployment
+The API will be available at `http://localhost:8000`
 
 ### Docker Deployment
 
-1.  **Build the Docker image:**
-    ```bash
-    docker build -t my-fastapi-app .
-    ```
-2.  **Run the Docker container:**
-    ```bash
-    docker run -p 8000:8000 -d my-fastapi-app
-    ```
-    Replace `8000:8000` with `<host_port>:<container_port>` if you need to map to a different host port. The container port is determined by the `PORT` environment variable set in the `Dockerfile` or `fly.toml` (defaulting to 8000).
+1. **Build and Run**
+```bash
+docker build -t adidas-store-api .
+docker run -p 8000:8000 adidas-store-api
+```
 
 ### Fly.io Deployment
 
-1.  **Install `flyctl`**: Follow the instructions at [fly.io/docs/hands-on/install-flyctl/](https://fly.io/docs/hands-on/install-flyctl/).
-2.  **Login to Fly.io**: `fly auth login`
-3.  **Launch the app (first time only)**:
-    ```bash
-    fly launch --name your-unique-app-name --region sin
-    ```
-    (Replace `your-unique-app-name` and `sin` (Singapore) with your desired app name and region. This will also create a `fly.toml` if one doesn't exist, or update the existing one.)
-4.  **Deploy changes**:
-    ```bash
-    fly deploy
-    ```
+1. **Install Fly CLI**
+```bash
+curl -L https://fly.io/install.sh | sh
+```
 
-The `fly.toml` file is pre-configured for auto-scaling and to stop machines when idle to save costs.
+2. **Deploy**
+```bash
+fly deploy
+```
 
-## Customization
+## API Endpoints
 
--   **Add new API endpoints**: Modify `project_base/app/main.py` to include new routes and logic.
--   **Modify dependencies**: Update `project_base/requirements.txt` and reinstall.
--   **Adjust Docker configuration**: Edit `project_base/Dockerfile`.
--   **Change deployment settings**: Update `project_base/fly.toml` for Fly.io.
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - User login
+- `GET /api/auth/me` - Get current user
 
-## Core Principles for Development
+### Products
+- `GET /api/products/` - Get all products
+- `GET /api/products/featured` - Get featured products
+- `GET /api/products/{id}` - Get product by ID
+- `POST /api/products/` - Create product (admin)
+- `PUT /api/products/{id}` - Update product (admin)
 
-While this base is minimal, consider these principles as you expand your application:
+### Orders
+- `POST /api/orders/` - Create new order
+- `GET /api/orders/` - Get user orders
+- `GET /api/orders/{id}` - Get specific order
 
--   **Modularity**: Keep code organized into logical modules.
--   **Clarity**: Write clear, understandable code with type hints where appropriate.
--   **Testing**: Implement unit and integration tests for new features.
--   **Security**: Follow security best practices (input validation, authentication if needed, etc.).
--   **Documentation**: Keep this README and code comments up-to-date.
+### Users
+- `GET /api/users/profile` - Get user profile
+- `PUT /api/users/profile` - Update user profile
+
+## API Documentation
+
+Visit `http://localhost:8000/docs` for interactive Swagger documentation.
+
+## Database Schema
+
+### Users
+- User authentication and profile information
+- Admin role support
+
+### Products
+- Product catalog with categories
+- Pricing, inventory, and variants (sizes/colors)
+- Featured products support
+
+### Orders
+- Complete order management
+- Order items with product variants
+- Order status tracking
+
+### Categories
+- Product categorization
+- Hierarchical category support
+
+## Configuration
+
+Key environment variables:
+
+```env
+DATABASE_URL=sqlite:///./adidas_store.db
+SECRET_KEY=your-secret-key-change-in-production
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+HOST=0.0.0.0
+PORT=8000
+```
+
+## Security Features
+
+- **Password Hashing**: bcrypt for secure password storage
+- **JWT Authentication**: Stateless token-based auth
+- **CORS Support**: Configurable cross-origin requests
+- **Input Validation**: Pydantic models for request validation
+- **SQL Injection Prevention**: SQLAlchemy ORM protection
+
+## Frontend Integration
+
+This API is designed to work with modern frontend frameworks:
+
+- **CORS enabled** for React/Vue/Angular applications
+- **RESTful design** with consistent response formats
+- **Comprehensive error handling** with proper HTTP status codes
+- **Pagination support** for large datasets
+
+## Sample Data
+
+To populate the database with sample Adidas products, run:
+
+```python
+python scripts/seed_data.py
+```
+
+## Testing
+
+Run tests with:
+
+```bash
+pytest
+```
+
+## Production Considerations
+
+- Use PostgreSQL for production database
+- Set strong SECRET_KEY in production
+- Configure proper CORS origins
+- Enable HTTPS
+- Set up monitoring and logging
+- Use environment-specific configurations
+
+## License
+
+This project is for educational/demonstration purposes.
