@@ -1,26 +1,62 @@
 import os
 from dotenv import load_dotenv
-from nicegui import ui
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+import uvicorn
 
-# Import the page definitions from app.main
-# This ensures that the @ui.page decorators in app/main.py are executed
-# and the routes are registered with NiceGUI before ui.run() is called.
-import app.main  # noqa: F401 -> Ensure app.main is imported to register pages
-
-# Load environment variables from .env file (if present)
+# Load environment variables
 load_dotenv()
 
-if __name__ in {"__main__", "__mp_main__"}: # Recommended by NiceGUI for multiprocessing compatibility
-    port = int(os.getenv("PORT", 8000))
-    host = os.getenv("HOST", "0.0.0.0") # Fly.io expects 0.0.0.0
+# Import API routes
+from api.routes import auth, products, orders, users
 
-    # title and favicon can be set here or in app.main using ui.run(title=..., favicon=...)
-    # uvicorn_logging_level='warning' helps to reduce log noise in production
-    # reload=False is important for production deployments like Fly.io
-    ui.run(
+# Import database initialization
+from core.database import engine, Base
+
+# Create database tables
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(
+    title="Adidas Shoes Store API",
+    description="Professional ecommerce API for Adidas shoes",
+    version="1.0.0"
+)
+
+# CORS middleware for React frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:5173", "*"],  # React dev servers
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Mount static files
+os.makedirs("static/images", exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Include API routes
+app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+app.include_router(products.router, prefix="/api/products", tags=["Products"])
+app.include_router(orders.router, prefix="/api/orders", tags=["Orders"])
+app.include_router(users.router, prefix="/api/users", tags=["Users"])
+
+@app.get("/")
+async def root():
+    return {"message": "Adidas Shoes Store API", "status": "running"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "service": "adidas-store-api"}
+
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))
+    host = os.getenv("HOST", "0.0.0.0")
+    
+    uvicorn.run(
+        "main:app",
         host=host,
         port=port,
-        title="My NiceGUI App",
-        uvicorn_logging_level='info', # Can be 'warning' or 'error' for less verbosity
-        reload=False # IMPORTANT: Set to False for production/deployment
+        reload=False
     )
