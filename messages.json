@@ -1,0 +1,6 @@
+[
+  {
+    "role": "user",
+    "content": "The deployment failed with the following error from Fly.io:\n\nCommand 'flyctl apps create hst-ai-ed3aca6f-8fc0-4ada-b1b4-4fdcb342a622' returned non-zero exit status 1.\n\nPlease fix the issue."
+  }
+]
